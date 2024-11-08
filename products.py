@@ -60,3 +60,40 @@ class Product:
         self.set_quantity(self.quantity - quantity)
 
         return total_price
+
+
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        """ init super from parent class,
+        setting quantity to 0 """
+        super().__init__(name, price, quantity=0)
+
+    def set_quantity(self, quantity):
+        """ Override to prevent any changes to quantity"""
+        pass
+
+    def buy(self, quantity):
+        """ Non-stocked product, quantity does not affect purchase"""
+        return self.price * quantity
+
+    def show(self):
+        """ Overriding the show method"""
+        return f"{self.name}, Price: {self.price} (Non-Stocked)"
+
+
+class LimitedProduct(Product):
+    def __init__(self, name, price, quantity, maximum):
+        """getting basic init from parent, adding maximum attribute
+        in order to limit the purchases after"""
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity):
+        """basic buy from parent + limiting purchase capacity """
+        if quantity > self.maximum:
+            raise ValueError(f"Cannot buy more than {self.maximum} in a single order.")
+        return super().buy(quantity)
+
+    def show(self):
+        """Overriding show method """
+        return f"{self.name}, Price: {self.price}, Max per order: {self.maximum}, Quantity: {self.quantity}"
